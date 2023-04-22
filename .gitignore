@@ -28,7 +28,24 @@ override.tf.json
 
 # Include tfplan files to ignore the plan output of command: terraform plan -out=tfplan
 # example: *tfplan*
+*tfplan*
 
 # Ignore CLI configuration files
 .terraformrc
 terraform.rc
+# env file, for maintaining any local script, environment variables/secret required
+*.env
+
+# tmp directory, place here any local file you want to maintain out of version control
+**/.tmp/
+
+# "Desktop Services Store": invisible file on macOS that gets automatically created anytime you look into a folder with ‘Finder.’ 
+.DS_Store
+
+# Local terratest data dirs
+**/.test-data/*
+
+#test artifacts that we do not want checked in
+tests/*.mod
+tests/*.sum
+tests/*.log

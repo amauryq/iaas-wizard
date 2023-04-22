@@ -1,0 +1,25 @@
+---
+- name: my-ubuntu
+  hostname: ubuntu-wild
+  project_id: sandbox-1-383001
+  region: us-east1
+  vpc_name: default
+  subnetwork: default
+  subnetwork_project: sandbox-1-383001
+  tags:
+    - allow-ssh
+  service_account:
+    email: 554004216544-compute@developer.gserviceaccount.com
+    scopes:
+      - https://www.googleapis.com/auth/cloud-platform
+  labels:
+    env_type: dev
+  machine_type: c3-highcpu-4
+  source_image_family : ubuntu-2204-lts
+  source_image_project: ubuntu-os-cloud
+  preemptible: true
+  use_resource_policies: true
+  dns_host_project: sandbox-1-383001
+  dns_managed_zone: clickermaster.com
+  environment: {}
+  allow_public_access: true
