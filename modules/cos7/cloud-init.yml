@@ -1,0 +1,40 @@
+#cloud-config
+
+users:
+- name: ${creds.user}
+  sudo: ALL=(ALL) NOPASSWD:ALL
+  groups: docker
+  ssh_authorized_keys:
+    - "${creds.public_key}"
+
+write_files:
+- path: /etc/systemd/system/${container.name}.service
+  permissions: 0644
+  owner: root
+  content: |
+    [Unit]
+    Description=Service for running container ${container.url}
+    Requires=docker.service network-online.target
+    After=docker.service network-online.target
+
+    [Service]
+    Environment="HOME=/home/${creds.user}"
+    ExecStartPre=/usr/bin/docker-credential-gcr configure-docker --registries ${container.registry}
+    ExecStart=/usr/bin/docker run --network=host --rm --name=${container.name} ${container.url}
+    ExecStop=/usr/bin/docker stop ${container.name}
+    Restart=on-failure
+    RestartSec=10
+    [Install]
+    WantedBy=multi-user.target
+
+runcmd:
+- iptables -A INPUT -p tcp -j ACCEPT
+- systemctl daemon-reload
+- systemctl enable --now --no-block ${container.name}.service
+- chmod -R +rx /home/${creds.user}/.docker
+
+# Optional once-per-boot setup. For example: mounting a PD.
+# bootcmd:
+# - fsck.ext4 -tvy /dev/[DEVICE_ID]
+# - mkdir -p /mnt/disks/[MNT_DIR]
+# - mount -t ext4 -O ... /dev/[DEVICE_ID] /mnt/disks/[MNT_DIR]

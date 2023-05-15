@@ -1,8 +1,17 @@
 ---
+- name: artifact-registry
+  repos:
+    - repo_id: linuxserver
+      format: DOCKER
+      description: "Artifact Registry Docker Repository"
+      project_id: sandbox-1-383001
+      region: us-east1
+      labels: {}
 - name: my-ubuntu
   hostname: ubuntu-wild
   project_id: sandbox-1-383001
   region: us-east1
+  # region: europe-southwest1
   vpc_name: default
   subnetwork: default
   subnetwork_project: sandbox-1-383001
@@ -15,6 +24,7 @@
   labels:
     env_type: dev
   machine_type: c3-highcpu-4
+  # machine_type: e2-micro
   source_image_family : ubuntu-2204-lts
   source_image_project: ubuntu-os-cloud
   preemptible: true
@@ -23,3 +33,65 @@
   dns_managed_zone: clickermaster.com
   environment: {}
   allow_public_access: true
+- name: wireguard
+  hostname: wireguard
+  project_id: sandbox-1-383001
+  region: us-east1
+  # region: europe-southwest1
+  vpc_name: default
+  subnetwork: default
+  subnetwork_project: sandbox-1-383001
+  tags:
+    - allow-ssh
+  service_account:
+    email: 554004216544-compute@developer.gserviceaccount.com
+    scopes:
+      - https://www.googleapis.com/auth/cloud-platform
+  labels:
+    env_type: dev
+  machine_type: c3-highcpu-4
+  port: 51820
+  source_image_family : cos-stable
+  source_image_project: cos-cloud
+  container:
+    url: us-east1-docker.pkg.dev/rdy-dev01-rss05-81a6/linuxserver/wireguard:0.1.0
+  environment:
+    myvar1: myvalue1
+  preemptible: true
+  use_resource_policies: true
+  dns_host_project: sandbox-1-383001
+  dns_managed_zone: clickermaster.com
+  allow_public_access: true
+# - name: my-cos7
+#   hostname: cos-wild
+#   max_replicas: 1
+#   port: 80
+#   project_id: sandbox-1-383001
+#   region: us-east1
+#   # region: europe-southwest1
+#   vpc_name: default
+#   subnetwork: default
+#   subnetwork_project: sandbox-1-383001
+#   tags:
+#     - allow-ssh
+#   service_account:
+#     email: 554004216544-compute@developer.gserviceaccount.com
+#     scopes:
+#       - https://www.googleapis.com/auth/cloud-platform
+#   labels:
+#     env_type: dev
+#   machine_type: c3-highcpu-4
+#   # machine_type: e2-micro
+#   disk_type: pd-standard
+#   disk_size_gb: 100
+#   source_image_family : cos-stable
+#   source_image_project: cos-cloud
+#   container:
+#     url: us-east1-docker.pkg.dev/rdy-dev01-rss01-e60c/cos/my-image:0.1.0
+#   preemptible: true
+#   use_resource_policies: true
+#   dns_host_project: sandbox-1-383001
+#   dns_managed_zone: clickermaster.com
+#   environment: {}
+#   allow_public_access: true
+
