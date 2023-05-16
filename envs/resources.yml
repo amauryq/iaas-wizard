@@ -7,8 +7,8 @@
       project_id: sandbox-1-383001
       region: us-east1
       labels: {}
-- name: my-ubuntu
-  hostname: ubuntu-wild
+- name: linux-wireguard
+  hostname: wireguard1
   project_id: sandbox-1-383001
   region: us-east1
   # region: europe-southwest1
@@ -33,8 +33,8 @@
   dns_managed_zone: clickermaster.com
   environment: {}
   allow_public_access: true
-- name: wireguard
-  hostname: wireguard
+- name: cos-wireguard
+  hostname: wireguard2
   project_id: sandbox-1-383001
   region: us-east1
   # region: europe-southwest1

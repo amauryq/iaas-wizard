@@ -2,8 +2,8 @@ version: '3.7'
 
 services:
   wireguard:
-    # image: linuxserver/wireguard
-    image: us-east1-docker.pkg.dev/sandbox-1-383001/linuxserver/wireguard
+    image: linuxserver/wireguard
+#    image: us-east1-docker.pkg.dev/sandbox-1-383001/linuxserver/wireguard
     container_name: wireguard
     cap_add:
       - NET_ADMIN
@@ -12,8 +12,7 @@ services:
       - PUID=1000
       - PGID=1000
       - TZ=America/New_York
-      - SERVERURL=1.1.1.1 #optional
-#      - SERVERURL=maliam.duckdns.org #optional
+      - SERVERURL=${ip_address} #optional
       - SERVERPORT=51820 #optional
       - PEERS=2 #optional
       - PEERDNS=auto #optional

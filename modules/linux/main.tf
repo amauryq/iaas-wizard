@@ -8,6 +8,20 @@ data "google_service_account" "default" {
   account_id = local.config.service_account.email
 }
 
+resource "google_compute_address" "default" {
+  count   = local.config.allow_public_access ? 1 : 0
+  name    = "${local.prefix}-ip-address"
+  project = local.config.project_id
+  region  = local.config.region
+}
+
+data "template_file" "docker_compose" {
+  template = file("scripts/docker/docker-compose.yml")
+  vars = {
+    ip_address = google_compute_address.default[0].address
+  }
+}
+
 resource "random_string" "default" {
   length  = 4
   upper   = false
@@ -39,7 +53,8 @@ resource "google_compute_instance" "linux" {
     dynamic "access_config" {
       for_each = local.config.allow_public_access ? [1] : []
       content {
-        network_tier = "STANDARD"
+        nat_ip       = google_compute_address.default[0].address
+        network_tier = "PREMIUM"
       }
     }
   }
@@ -60,16 +75,26 @@ resource "google_compute_instance" "linux" {
   }
 
   provisioner "remote-exec" {
-    connection {
-      type        = "ssh"
-      host        = local.config.allow_public_access ? self.network_interface[0].access_config[0].nat_ip : self.network_interface[0].network_ip
-      user        = local.creds.user
-      private_key = local.creds.private_key
-      # https://github.com/hashicorp/terraform/issues/3423      
-      agent = false
-    }
-
     inline = ["echo SSH connection is OK", ]
+  }
+
+  provisioner "file" {
+    content     = data.template_file.docker_compose.rendered
+    destination = "/home/${local.creds.user}/docker-compose.yml"
+  }
+
+  provisioner "file" {
+    source      = "scripts/docker/wireguard"
+    destination = "/home/${local.creds.user}/wireguard"
+  }
+
+  connection {
+    type        = "ssh"
+    host        = local.config.allow_public_access ? self.network_interface[0].access_config[0].nat_ip : self.network_interface[0].network_ip
+    user        = local.creds.user
+    private_key = local.creds.private_key
+    # https://github.com/hashicorp/terraform/issues/3423      
+    agent = false
   }
 }
 
