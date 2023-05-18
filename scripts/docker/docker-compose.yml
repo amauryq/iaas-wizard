@@ -13,22 +13,24 @@ services:
       - PGID=1000
       - TZ=America/New_York
       - SERVERURL=${ip_address} #optional
-      - SERVERPORT=51820 #optional
+      - SERVERPORT=${port} #optional
       - PEERS=2 #optional
       - PEERDNS=auto #optional
-#      - PEERDNS=192.168.4.15 #optional
       - INTERNAL_SUBNET=10.13.13.0 #optional
+      - ALLOWEDIPS=0.0.0.0/0 #optional
+      - LOG_CONFS=true
     volumes:
       - ./wireguard:/config
-      - /lib/modules:/lib/modules
+      - /lib/modules:/lib/modules:ro
       - /usr/src:/usr/src
     ports:
-      - 51820:51820/udp
+      - ${port}:${port}/udp
     sysctls:
       - net.ipv4.conf.all.src_valid_mark=1
-    # dns:
-    #   - 172.20.0.7
+    networks:
+      - backbone
     restart: unless-stopped
-    # networks:
-    #   containers:
-    #     ipv4_address: 172/20.0.16
+
+networks:
+  backbone:
+    driver: bridge

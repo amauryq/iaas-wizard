@@ -17,6 +17,7 @@
   subnetwork_project: sandbox-1-383001
   tags:
     - allow-ssh
+    - wireguard
   service_account:
     email: 554004216544-compute@developer.gserviceaccount.com
     scopes:

@@ -15,10 +15,25 @@ resource "google_compute_address" "default" {
   region  = local.config.region
 }
 
+resource "google_compute_firewall" "default" {
+  name    = "${local.prefix}-firewall"
+  project = local.config.project_id
+  network = data.google_compute_network.shared_vpc.id
+
+  allow {
+    protocol = "udp"
+    ports    = ["51820"]
+  }
+
+  source_ranges = ["0.0.0.0/0"]
+  target_tags   = ["wireguard"]
+}
+
 data "template_file" "docker_compose" {
   template = file("scripts/docker/docker-compose.yml")
   vars = {
     ip_address = google_compute_address.default[0].address
+    port       = 51820
   }
 }
 
