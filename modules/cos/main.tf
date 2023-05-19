@@ -20,6 +20,7 @@ resource "google_compute_instance" "cos" {
   name         = "${local.prefix}-${local.config.project_id}-${random_string.default.result}"
   project      = local.config.project_id
   zone         = random_shuffle.zone.result[0]
+  description  = "${local.service_name} instance for cos testing purpose"
   machine_type = local.config.machine_type
   labels       = merge({ os = "cos" }, local.config.labels)
   tags         = local.config.tags
@@ -38,13 +39,14 @@ resource "google_compute_instance" "cos" {
     dynamic "access_config" {
       for_each = local.config.allow_public_access ? [1] : []
       content {
-        network_tier = "STANDARD"
+        nat_ip       = google_compute_address.default[0].address
+        network_tier = "PREMIUM"
       }
     }
   }
 
   metadata = merge(local.config.environment, {
-    block-project-ssh-keys = true
+    block-project-ssh-keys = "TRUE"
     enable-oslogin         = "FALSE"
     environment            = join(" ", [for k, v in local.config.environment : "${k}"])
     user-data              = local.cloud_init

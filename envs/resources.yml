@@ -8,7 +8,7 @@
       region: us-east1
       labels: {}
 - name: linux-wireguard
-  hostname: wireguard1
+  hostname: wireguard
   project_id: sandbox-1-383001
   region: us-east1
   # region: europe-southwest1
@@ -35,7 +35,7 @@
   environment: {}
   allow_public_access: true
 - name: cos-wireguard
-  hostname: wireguard2
+  hostname: wireguard
   project_id: sandbox-1-383001
   region: us-east1
   # region: europe-southwest1
@@ -44,6 +44,7 @@
   subnetwork_project: sandbox-1-383001
   tags:
     - allow-ssh
+    - wireguard
   service_account:
     email: 554004216544-compute@developer.gserviceaccount.com
     scopes:
@@ -55,7 +56,7 @@
   source_image_family : cos-stable
   source_image_project: cos-cloud
   container:
-    url: us-east1-docker.pkg.dev/rdy-dev01-rss05-81a6/linuxserver/wireguard:0.1.0
+   url: us-east1-docker.pkg.dev/rdy-dev01-rss05-81a6/linuxserver/wireguard:0.1.0
   environment:
     myvar1: myvalue1
   preemptible: true

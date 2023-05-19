@@ -26,7 +26,7 @@ REGION = us-east1
 
 APP = wireguard
 VERSION = 0.1.0
-APP_FOLDER = docker/$(APP)
+APP_FOLDER = scripts/docker/$(APP)
 
 LOCAL_PORT = 8080
 PORT = 80
@@ -79,6 +79,12 @@ tf-plan: tf-fmt
 
 tf-apply: tf-fmt ## apply the terraform configuration for creating resources
 	terraform apply $(TF_PARAMS)
+
+tf-apply-ar: tf-fmt ## apply the terraform configuration for creating resources
+	terraform apply -target="module.ar" $(TF_PARAMS)
+
+tf-apply-cos: tf-fmt ## apply the terraform configuration for creating resources
+	terraform apply -target="module.cos" $(TF_PARAMS)
 	
 tf-destroy: tf-fmt ## destroy the all the terraform resources
 	terraform destroy $(TF_PARAMS)
